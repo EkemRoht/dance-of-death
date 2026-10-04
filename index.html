@@ -35,12 +35,12 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ---------- фон: размытое поле борщевика (картинка уже размыта в bg.jpg) ---------- */
+  /* ---------- фон: поле борщевика (bg-sharp.jpg — чёткая, bg.jpg — размытая) ---------- */
   .bg {
     position: fixed; inset: 0; z-index: -2; overflow: hidden;
   }
   .bg {
-    background: #b2979a url("bg.jpg") center 60% / cover no-repeat;
+    background: #b2979a url("bg-sharp.jpg") center 60% / cover no-repeat;
   }
   .bg::after { /* виньетка + лёгкая дымка, чтобы читался текст */
     content: ""; position: absolute; inset: 0;
@@ -148,7 +148,7 @@
   }
   .gap span {
     display: inline-block; padding: 4px 18px;
-    background: rgba(236, 232, 218, 0.6); border-radius: 30px;
+    background: rgba(236, 232, 218, 0.85); border-radius: 30px; box-shadow: 0 6px 24px rgba(50,40,30,0.12);
   }
 
   .card {
@@ -192,10 +192,12 @@
   .loading span { background: rgba(236,232,218,0.7); padding: 6px 20px; border-radius: 30px; }
 
   footer { text-align: center; padding: 0 16px 50px; }
-  footer .note {
+  header .note { margin-top: 18px; padding: 10px 28px 14px; }
+  header .sub { margin-top: 0; }
+  .note {
     display: inline-block; max-width: 100%;
     padding: 12px 26px 14px;
-    font-size: 21px; color: var(--ink);
+    font-size: 21px; color: var(--ink); text-align: center;
     background: var(--paper);
     -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
     border: 1px solid var(--paper-edge);
@@ -238,10 +240,12 @@
 
 <header>
   <h1 id="title">Танец Смерти</h1>
+  <div class="note">
   <div class="sub">таймлайн</div>
   <div class="credit">комикс <a href="https://vk.ru/shuchila" target="_blank" rel="noopener">Шучилы</a></div>
   <div class="legend" id="legend"></div>
   <div><div class="status" id="status"><span class="dot"></span><span id="status-text">загружаю таблицу…</span> · <a id="sheet-link-top" target="_blank" rel="noopener">таблица</a></div></div>
+  </div>
 </header>
 
 <main class="timeline" id="timeline">
