@@ -193,9 +193,19 @@
   .loading { text-align: center; font-size: 30px; color: var(--ink-soft); padding: 10vh 0; position: relative; z-index: 1; }
   .loading span { background: rgba(236,232,218,0.7); padding: 6px 20px; border-radius: 30px; }
 
-  footer { text-align: center; padding: 0 16px 50px; font-size: 19px; color: var(--ink-soft); }
+  footer { text-align: center; padding: 0 16px 50px; }
+  footer .note {
+    display: inline-block; max-width: 100%;
+    padding: 12px 26px 14px;
+    font-size: 21px; color: var(--ink);
+    background: var(--paper);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border: 1px solid var(--paper-edge);
+    border-radius: 14px 18px 12px 20px;
+    box-shadow: 0 10px 30px rgba(45,38,28,0.18);
+  }
   footer a { color: inherit; }
-  footer .credit { font-size: 24px; color: var(--ink); margin-bottom: 6px; }
+  footer .credit { font-size: 25px; margin-bottom: 2px; }
   .credit a { color: var(--t0); text-decoration-thickness: 1px; text-underline-offset: 3px; }
   header .credit { margin-top: 4px; font-size: 24px; color: var(--ink-soft); }
 
@@ -302,8 +312,10 @@
 </main>
 
 <footer>
-  <div class="credit">«Танец Смерти» — комикс <a href="https://vk.ru/shuchila" target="_blank" rel="noopener">Шучилы</a></div>
-  <div>данные берутся из <a id="sheet-link" target="_blank" rel="noopener">оригинальной таблицы</a> и обновляются сами</div>
+  <div class="note">
+    <div class="credit">«Танец Смерти» — комикс <a href="https://vk.ru/shuchila" target="_blank" rel="noopener">Шучилы</a></div>
+    <div>таймлайн собран по <a id="sheet-link" target="_blank" rel="noopener">оригинальной таблице</a></div>
+  </div>
 </footer>
 
 <script>
