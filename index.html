@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Танец Смерти — таймлайн</title>
+<meta name="description" content="Хронология событий «Танца Смерти»">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #2f2a24;
+    --ink-soft: #5b5348;
+    --paper: rgba(250, 247, 238, 0.72);
+    --paper-edge: rgba(255, 255, 255, 0.55);
+    --spine: rgba(60, 52, 40, 0.35);
+    --t0: #8a5a3c;   /* основная линия — ржавый */
+    --t1: #4f6b70;   /* вторая линия — сизый */
+    --t2: #6d6a3a;
+    --t3: #7a4a63;
+    --hand: "Caveat", "Bad Script", cursive;
+    --title: "Marck Script", "Caveat", cursive;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #d9dbd2;
+    color: var(--ink);
+    font-family: var(--hand);
+    font-size: 23px;
+    line-height: 1.25;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- фон: размытое поле ---------- */
+  .bg {
+    position: fixed; inset: 0; z-index: -2; overflow: hidden;
+  }
+  .bg svg {
+    position: absolute; inset: -6%;
+    width: 112%; height: 112%;
+    filter: blur(14px) saturate(0.85);
+  }
+  .bg::after { /* виньетка + лёгкая дымка, чтобы читался текст */
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 40%, rgba(240,238,228,0.25), rgba(40,36,28,0.28) 100%),
+      linear-gradient(to bottom, rgba(235,233,225,0.15), rgba(235,233,225,0) 40%);
+  }
+  .grain {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    opacity: 0.16; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.27  0 0 0 0 0.22  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* ---------- шапка ---------- */
+  header {
+    text-align: center;
+    padding: 12vh 16px 5vh;
+  }
+  h1 {
+    font-family: var(--title);
+    font-weight: 400;
+    font-size: clamp(56px, 11vw, 128px);
+    line-height: 1;
+    margin: 0;
+    color: #2a251f;
+    text-shadow: 0 2px 30px rgba(255,252,240,0.6);
+  }
+  .sub {
+    margin-top: 10px;
+    font-size: 28px;
+    color: var(--ink-soft);
+  }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px 26px; justify-content: center;
+    margin-top: 26px; font-size: 24px;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .legend i {
+    width: 22px; height: 4px; border-radius: 3px; display: inline-block;
+    transform: rotate(-4deg);
+  }
+  .status {
+    margin-top: 18px; font-size: 19px; color: var(--ink-soft);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .status a { color: inherit; }
+  .status .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #8a9a6a;
+    box-shadow: 0 0 0 0 rgba(138,154,106,0.6);
+  }
+  .status.live .dot { animation: pulse 2.4s ease-out infinite; }
+  .status.err .dot { background: #a5563f; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(138,154,106,0.55); } 100% { box-shadow: 0 0 0 10px rgba(138,154,106,0); } }
+
+  /* ---------- таймлайн ---------- */
+  .timeline {
+    position: relative;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 20px 16px 18vh;
+  }
+  .timeline::before { /* хребет — неровная карандашная линия */
+    content: ""; position: absolute; top: 0; bottom: 0; left: 50%;
+    width: 2px; margin-left: -1px;
+    background: repeating-linear-gradient(to bottom, var(--spine) 0 14px, transparent 14px 20px);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 64px 1fr;
+    align-items: start;
+    margin: 18px 0;
+  }
+  .row .knot {
+    grid-column: 2; justify-self: center; margin-top: 22px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #efe9da; border: 2px solid var(--ink-soft);
+    position: relative; z-index: 1;
+  }
+  .row .slot { min-width: 0; }
+  .row .slot.l { grid-column: 1; display: flex; justify-content: flex-end; }
+  .row .slot.r { grid-column: 3; }
+
+  .year {
+    position: relative; z-index: 1;
+    text-align: center;
+    margin: 56px 0 26px;
+  }
+  .year span {
+    display: inline-block;
+    font-family: var(--title);
+    font-size: 54px; line-height: 1;
+    padding: 6px 22px 10px;
+    background: rgba(236, 232, 218, 0.82);
+    border-radius: 40% 55% 45% 50% / 60% 45% 55% 40%;
+    box-shadow: 0 6px 24px rgba(50,40,30,0.12);
+  }
+  .gap {
+    text-align: center; position: relative; z-index: 1;
+    margin: 70px 0 10px;
+    font-size: 30px; color: var(--ink-soft);
+  }
+  .gap span {
+    display: inline-block; padding: 4px 18px;
+    background: rgba(236, 232, 218, 0.6); border-radius: 30px;
+  }
+  .gap::before {
+    content: "〰〰〰"; display: block; letter-spacing: 6px; opacity: 0.5; margin-bottom: 6px;
+  }
+
+  .card {
+    position: relative;
+    max-width: 500px; width: 100%;
+    padding: 16px 22px 18px;
+    background: var(--paper);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+    backdrop-filter: blur(10px) saturate(1.1);
+    border: 1px solid var(--paper-edge);
+    border-radius: 6px 10px 7px 12px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 10px 30px rgba(45,38,28,0.14);
+    transform: rotate(var(--rot, 0deg));
+    transition: transform .35s ease, box-shadow .35s ease;
+  }
+  .card:hover { transform: rotate(0deg) translateY(-2px); box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 16px 40px rgba(45,38,28,0.2); }
+  .card::before { /* полоска цвета линии, как маркер */
+    content: ""; position: absolute; top: 14px; bottom: 14px; width: 4px; border-radius: 3px;
+    background: var(--tc); opacity: 0.75;
+  }
+  .slot.l .card::before { right: -2px; }
+  .slot.r .card::before { left: -2px; }
+  .card .date {
+    font-weight: 700; font-size: 27px; color: var(--tc);
+    margin-bottom: 6px;
+  }
+  .card .tag { display: none; }
+  .card p { margin: 0 0 10px; white-space: pre-line; }
+  .card p:last-child { margin-bottom: 0; }
+  .card hr {
+    border: 0; height: 10px; margin: 12px 0;
+    background: radial-gradient(circle, var(--ink-soft) 1.2px, transparent 1.6px) center / 16px 10px repeat-x;
+    opacity: 0.5;
+  }
+
+  /* появление при прокрутке */
+  .reveal { opacity: 0; transform: translateY(18px) rotate(var(--rot, 0deg)); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: rotate(var(--rot, 0deg)); }
+
+  .loading { text-align: center; font-size: 30px; color: var(--ink-soft); padding: 10vh 0; position: relative; z-index: 1; }
+  .loading span { background: rgba(236,232,218,0.7); padding: 6px 20px; border-radius: 30px; }
+
+  footer { text-align: center; padding: 0 16px 50px; font-size: 19px; color: var(--ink-soft); }
+  footer a { color: inherit; }
+  footer .credit { font-size: 24px; color: var(--ink); margin-bottom: 6px; }
+  .credit a { color: var(--t0); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  header .credit { margin-top: 4px; font-size: 24px; color: var(--ink-soft); }
+
+  /* ---------- узкий экран: одна колонка ---------- */
+  @media (max-width: 760px) {
+    body { font-size: 21px; }
+    header { padding-top: 8vh; }
+    .timeline { padding-left: 16px; padding-right: 16px; }
+    .timeline::before { left: 28px; }
+    .row { grid-template-columns: 26px 1fr; margin: 14px 0; }
+    .row .knot { grid-column: 1; grid-row: 1 / span 3; margin-top: 20px; width: 12px; height: 12px; }
+    .row .slot.l, .row .slot.r { grid-column: 2; justify-content: flex-start; }
+    .row .slot.r { margin-top: 12px; }
+    .row .slot.l:empty, .row .slot.r:empty { display: none; }
+    .row .slot.l .card::before { right: auto; left: -2px; }
+    .card { max-width: none; padding: 14px 18px 16px; }
+    .card .tag { display: block; font-size: 18px; color: var(--tc); opacity: .85; margin: -4px 0 4px; }
+    .year { text-align: left; margin: 40px 0 18px; }
+    .year span { font-size: 44px; }
+    .gap { text-align: left; padding-left: 4px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: rotate(var(--rot, 0deg)); transition: none; }
+    .status.live .dot { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#b9c3c4"/>
+        <stop offset="0.45" stop-color="#d8d9d0"/>
+        <stop offset="0.62" stop-color="#e9e3d2"/>
+      </linearGradient>
+      <radialGradient id="sun" cx="0.68" cy="0.5" r="0.35">
+        <stop offset="0" stop-color="#fbf4e2" stop-opacity="0.95"/>
+        <stop offset="1" stop-color="#fbf4e2" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="field1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#a7a888"/>
+        <stop offset="1" stop-color="#8d8c6a"/>
+      </linearGradient>
+      <linearGradient id="field2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#b9ad82"/>
+        <stop offset="1" stop-color="#8f8459"/>
+      </linearGradient>
+      <linearGradient id="field3" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#7f8462"/>
+        <stop offset="1" stop-color="#5d6046"/>
+      </linearGradient>
+    </defs>
+    <rect width="1600" height="1000" fill="url(#sky)"/>
+    <rect width="1600" height="1000" fill="url(#sun)"/>
+    <!-- облака -->
+    <g fill="#f2efe6" opacity="0.55">
+      <ellipse cx="300" cy="220" rx="260" ry="50"/>
+      <ellipse cx="460" cy="250" rx="200" ry="38"/>
+      <ellipse cx="1180" cy="170" rx="300" ry="46"/>
+      <ellipse cx="980" cy="300" rx="180" ry="30"/>
+    </g>
+    <!-- дальний лес -->
+    <path fill="#7e8a80" opacity="0.75" d="M0 590 Q60 560 120 575 T240 565 T360 580 Q420 548 480 570 T610 560 T740 575 Q800 552 870 568 T1000 560 T1130 578 Q1200 550 1270 566 T1400 558 T1530 572 L1600 566 L1600 640 L0 640Z"/>
+    <path fill="#6c776c" opacity="0.6" d="M0 610 Q120 590 260 605 T520 598 T800 610 T1080 600 T1340 612 T1600 600 L1600 660 L0 660Z"/>
+    <!-- поля -->
+    <path fill="url(#field1)" d="M0 630 Q400 600 800 625 T1600 615 L1600 1000 L0 1000Z"/>
+    <path fill="url(#field2)" d="M0 700 Q300 660 700 690 T1600 670 L1600 1000 L0 1000Z"/>
+    <path fill="#c8bd92" opacity="0.5" d="M0 735 Q500 700 1000 725 T1600 712 L1600 760 Q1100 770 600 760 T0 775Z"/>
+    <path fill="url(#field3)" d="M0 820 Q400 770 900 800 T1600 790 L1600 1000 L0 1000Z"/>
+    <!-- зонтики трав на переднем плане -->
+    <g fill="#ece4cc" opacity="0.7">
+      <ellipse cx="180" cy="840" rx="34" ry="12"/>
+      <ellipse cx="240" cy="870" rx="26" ry="10"/>
+      <ellipse cx="120" cy="890" rx="30" ry="11"/>
+      <ellipse cx="1360" cy="850" rx="36" ry="12"/>
+      <ellipse cx="1430" cy="880" rx="26" ry="9"/>
+      <ellipse cx="1290" cy="900" rx="30" ry="11"/>
+      <ellipse cx="760" cy="905" rx="22" ry="8"/>
+    </g>
+    <g stroke="#5a5c44" stroke-width="5" opacity="0.5">
+      <line x1="180" y1="850" x2="186" y2="1000"/>
+      <line x1="240" y1="878" x2="236" y2="1000"/>
+      <line x1="120" y1="898" x2="124" y2="1000"/>
+      <line x1="1360" y1="860" x2="1354" y2="1000"/>
+      <line x1="1430" y1="888" x2="1434" y2="1000"/>
+      <line x1="1290" y1="908" x2="1292" y2="1000"/>
+    </g>
+  </svg>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<header>
+  <h1 id="title">Танец Смерти</h1>
+  <div class="sub">таймлайн</div>
+  <div class="credit">комикс <a href="https://vk.ru/shuchila" target="_blank" rel="noopener">Шучилы</a></div>
+  <div class="legend" id="legend"></div>
+  <div><div class="status" id="status"><span class="dot"></span><span id="status-text">загружаю таблицу…</span> · <a id="sheet-link-top" target="_blank" rel="noopener">таблица</a></div></div>
+</header>
+
+<main class="timeline" id="timeline">
+  <div class="loading"><span>листаю записи…</span></div>
+</main>
+
+<footer>
+  <div class="credit">«Танец Смерти» — комикс <a href="https://vk.ru/shuchila" target="_blank" rel="noopener">Шучилы</a></div>
+  <div>данные берутся из <a id="sheet-link" target="_blank" rel="noopener">оригинальной таблицы</a> и обновляются сами</div>
+</footer>
+
+<script>
+  // ---------- настройки ----------
+  const SHEET_ID = "1_UhgVWsQqOCOUiJELDhf6V_ox3jjNh19w1ucFmHJD4I";
+  const GID = "0";
+  const POLL_MS = 60 * 1000;
+  // Названия сюжетных линий — по порядку пар «дата/событие» в таблице сверху вниз.
+  const TRACK_NAMES = ["основная линия", "Серёжа и Саня"];
+  const TRACK_COLORS = ["var(--t0)", "var(--t1)", "var(--t2)", "var(--t3)"];
+
+  const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=0&gid=${GID}`;
+  const CACHE_KEY = "dod-timeline-csv";
+  for (const id of ["sheet-link", "sheet-link-top"])
+    document.getElementById(id).href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=${GID}`;
+
+  // ---------- CSV ----------
+  function parseCSV(text) {
+    const rows = []; let row = [], field = "", q = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (q) {
+        if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else q = false; }
+        else field += c;
+      } else if (c === '"') q = true;
+      else if (c === ",") { row.push(field); field = ""; }
+      else if (c === "\n" || c === "\r") {
+        if (c === "\r" && text[i + 1] === "\n") i++;
+        row.push(field); rows.push(row); row = []; field = "";
+      } else field += c;
+    }
+    if (field || row.length) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  // Таблица «лежит на боку»: строки — поля (дата / событие), столбцы — моменты времени.
+  // Каждая пара строк «дата» + «событие» — отдельная сюжетная линия.
+  function toTimeline(rows) {
+    const norm = s => (s || "").trim().toLowerCase();
+    const tracks = [];
+    for (let i = 0; i < rows.length - 1; i++) {
+      if (norm(rows[i][0]) === "дата" && norm(rows[i + 1][0]) === "событие") { tracks.push([rows[i], rows[i + 1]]); i++; }
+    }
+    const width = Math.max(0, ...rows.map(r => r.length));
+    const moments = [];
+    let year = null;
+    for (let c = 1; c < width; c++) {
+      const entries = tracks.map(([d, e], t) => ({ track: t, date: (d[c] || "").trim(), text: (e[c] || "").trim() }))
+                            .filter(x => x.date || x.text);
+      if (!entries.length) continue;
+      const years = entries.map(x => (x.date.match(/(19|20)\d{2}/g) || []).map(Number)).flat();
+      const y = years.length ? Math.min(...years) : year;
+      moments.push({ year: y, entries });
+      if (years.length) year = Math.max(...years);
+    }
+    return { trackCount: tracks.length, moments };
+  }
+
+  // ---------- рендер ----------
+  const esc = s => s.replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  function plural(n, one, few, many) {
+    const m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+    return many;
+  }
+  function textToHTML(text) {
+    return text.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean)
+      .map(p => /^_{3,}$/.test(p) ? "<hr>" : `<p>${esc(p)}</p>`).join("");
+  }
+  const rot = i => (((i * 37) % 11) - 5) * 0.14; // стабильный «небрежный» наклон
+
+  function cardHTML(entry, i) {
+    const color = TRACK_COLORS[entry.track % TRACK_COLORS.length];
+    const name = TRACK_NAMES[entry.track] || `линия ${entry.track + 1}`;
+    return `<article class="card reveal" style="--tc:${color};--rot:${rot(i)}deg">
+      ${entry.date ? `<div class="date">${esc(entry.date)}</div>` : ""}
+      <div class="tag">${esc(name)}</div>
+      ${textToHTML(entry.text)}
+    </article>`;
+  }
+
+  function render(data, animate) {
+    const legend = document.getElementById("legend");
+    legend.innerHTML = Array.from({ length: data.trackCount }, (_, t) =>
+      `<span><i style="background:${TRACK_COLORS[t % TRACK_COLORS.length]}"></i>${esc(TRACK_NAMES[t] || `линия ${t + 1}`)}</span>`).join("");
+
+    let html = "", prevYear = null, n = 0;
+    for (const m of data.moments) {
+      if (m.year != null && m.year !== prevYear) {
+        if (prevYear != null && m.year - prevYear >= 3) {
+          const d = m.year - prevYear;
+          html += `<div class="gap"><span>${d} ${plural(d, "год", "года", "лет")} спустя</span></div>`;
+        }
+        html += `<div class="year"><span>${m.year}</span></div>`;
+        prevYear = m.year;
+      }
+      // на широком экране: первая линия слева, остальные справа
+      const left = m.entries.filter(e => e.track === 0), right = m.entries.filter(e => e.track !== 0);
+      html += `<section class="row">
+        <div class="slot l">${left.map(e => cardHTML(e, n++)).join("")}</div>
+        <div class="knot"></div>
+        <div class="slot r">${right.map(e => cardHTML(e, n++)).join("")}</div>
+      </section>`;
+    }
+    const tl = document.getElementById("timeline");
+    tl.innerHTML = html || `<div class="loading"><span>в таблице пока пусто</span></div>`;
+    const cards = tl.querySelectorAll(".reveal");
+    if (!animate || !("IntersectionObserver" in window)) { cards.forEach(c => c.classList.add("in")); return; }
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    }), { rootMargin: "0px 0px -8% 0px" });
+    cards.forEach(c => io.observe(c));
+  }
+
+  // ---------- загрузка и «живое» обновление ----------
+  let lastCSV = null;
+  const statusEl = document.getElementById("status"), statusText = document.getElementById("status-text");
+  const hhmm = () => new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+
+  function apply(csv, animate) {
+    if (csv === lastCSV) return false;
+    lastCSV = csv;
+    render(toTimeline(parseCSV(csv)), animate);
+    return true;
+  }
+
+  async function refresh(first) {
+    try {
+      const res = await fetch(`${CSV_URL}&_=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(res.status);
+      const csv = await res.text();
+      const changed = apply(csv, first && lastCSV === null);
+      try { localStorage.setItem(CACHE_KEY, csv); } catch (_) {}
+      statusEl.className = "status live";
+      statusText.textContent = changed && !first ? `есть изменения · ${hhmm()}` : `синхронизировано · ${hhmm()}`;
+    } catch (err) {
+      statusEl.className = "status err";
+      statusText.textContent = lastCSV ? "нет связи с таблицей, показываю сохранённое" : "не удалось загрузить таблицу";
+    }
+  }
+
+  try { const cached = localStorage.getItem(CACHE_KEY); if (cached) apply(cached, true); } catch (_) {}
+  refresh(true);
+  setInterval(() => { if (!document.hidden) refresh(false); }, POLL_MS);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(false); });
+</script>
+</body>
+</html>
