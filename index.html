@@ -27,7 +27,7 @@
   body {
     margin: 0;
     min-height: 100vh;
-    background: #d9dbd2;
+    background: #b2979a;
     color: var(--ink);
     font-family: var(--hand);
     font-size: 23px;
@@ -35,14 +35,12 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ---------- фон: размытое поле ---------- */
+  /* ---------- фон: размытое поле борщевика (картинка уже размыта в bg.jpg) ---------- */
   .bg {
     position: fixed; inset: 0; z-index: -2; overflow: hidden;
   }
-  .bg svg {
-    position: absolute; inset: -6%;
-    width: 112%; height: 112%;
-    filter: blur(14px) saturate(0.85);
+  .bg {
+    background: #b2979a url("bg.jpg") center 60% / cover no-repeat;
   }
   .bg::after { /* виньетка + лёгкая дымка, чтобы читался текст */
     content: ""; position: absolute; inset: 0;
@@ -235,68 +233,7 @@
 </head>
 <body>
 
-<div class="bg" aria-hidden="true">
-  <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#b9c3c4"/>
-        <stop offset="0.45" stop-color="#d8d9d0"/>
-        <stop offset="0.62" stop-color="#e9e3d2"/>
-      </linearGradient>
-      <radialGradient id="sun" cx="0.68" cy="0.5" r="0.35">
-        <stop offset="0" stop-color="#fbf4e2" stop-opacity="0.95"/>
-        <stop offset="1" stop-color="#fbf4e2" stop-opacity="0"/>
-      </radialGradient>
-      <linearGradient id="field1" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#a7a888"/>
-        <stop offset="1" stop-color="#8d8c6a"/>
-      </linearGradient>
-      <linearGradient id="field2" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#b9ad82"/>
-        <stop offset="1" stop-color="#8f8459"/>
-      </linearGradient>
-      <linearGradient id="field3" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#7f8462"/>
-        <stop offset="1" stop-color="#5d6046"/>
-      </linearGradient>
-    </defs>
-    <rect width="1600" height="1000" fill="url(#sky)"/>
-    <rect width="1600" height="1000" fill="url(#sun)"/>
-    <!-- облака -->
-    <g fill="#f2efe6" opacity="0.55">
-      <ellipse cx="300" cy="220" rx="260" ry="50"/>
-      <ellipse cx="460" cy="250" rx="200" ry="38"/>
-      <ellipse cx="1180" cy="170" rx="300" ry="46"/>
-      <ellipse cx="980" cy="300" rx="180" ry="30"/>
-    </g>
-    <!-- дальний лес -->
-    <path fill="#7e8a80" opacity="0.75" d="M0 590 Q60 560 120 575 T240 565 T360 580 Q420 548 480 570 T610 560 T740 575 Q800 552 870 568 T1000 560 T1130 578 Q1200 550 1270 566 T1400 558 T1530 572 L1600 566 L1600 640 L0 640Z"/>
-    <path fill="#6c776c" opacity="0.6" d="M0 610 Q120 590 260 605 T520 598 T800 610 T1080 600 T1340 612 T1600 600 L1600 660 L0 660Z"/>
-    <!-- поля -->
-    <path fill="url(#field1)" d="M0 630 Q400 600 800 625 T1600 615 L1600 1000 L0 1000Z"/>
-    <path fill="url(#field2)" d="M0 700 Q300 660 700 690 T1600 670 L1600 1000 L0 1000Z"/>
-    <path fill="#c8bd92" opacity="0.5" d="M0 735 Q500 700 1000 725 T1600 712 L1600 760 Q1100 770 600 760 T0 775Z"/>
-    <path fill="url(#field3)" d="M0 820 Q400 770 900 800 T1600 790 L1600 1000 L0 1000Z"/>
-    <!-- зонтики трав на переднем плане -->
-    <g fill="#ece4cc" opacity="0.7">
-      <ellipse cx="180" cy="840" rx="34" ry="12"/>
-      <ellipse cx="240" cy="870" rx="26" ry="10"/>
-      <ellipse cx="120" cy="890" rx="30" ry="11"/>
-      <ellipse cx="1360" cy="850" rx="36" ry="12"/>
-      <ellipse cx="1430" cy="880" rx="26" ry="9"/>
-      <ellipse cx="1290" cy="900" rx="30" ry="11"/>
-      <ellipse cx="760" cy="905" rx="22" ry="8"/>
-    </g>
-    <g stroke="#5a5c44" stroke-width="5" opacity="0.5">
-      <line x1="180" y1="850" x2="186" y2="1000"/>
-      <line x1="240" y1="878" x2="236" y2="1000"/>
-      <line x1="120" y1="898" x2="124" y2="1000"/>
-      <line x1="1360" y1="860" x2="1354" y2="1000"/>
-      <line x1="1430" y1="888" x2="1434" y2="1000"/>
-      <line x1="1290" y1="908" x2="1292" y2="1000"/>
-    </g>
-  </svg>
-</div>
+<div class="bg" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 
 <header>
