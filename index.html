@@ -104,10 +104,14 @@
     margin: 0 auto;
     padding: 20px 16px 18vh;
   }
-  .timeline::before { /* хребет — неровная карандашная линия */
+  /* Хребет рисуется отдельно для каждой главы, поэтому на «N лет спустя» пунктир рвётся */
+  .chapter { position: relative; padding: 10px 0 30px; }
+  .chapter::before { /* хребет — неровная карандашная линия */
     content: ""; position: absolute; top: 0; bottom: 0; left: 50%;
     width: 2px; margin-left: -1px;
     background: repeating-linear-gradient(to bottom, var(--spine) 0 14px, transparent 14px 20px);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 60px, #000 calc(100% - 60px), transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 60px, #000 calc(100% - 60px), transparent);
   }
   .row {
     display: grid;
@@ -141,7 +145,7 @@
   }
   .gap {
     text-align: center; position: relative; z-index: 1;
-    margin: 70px 0 10px;
+    margin: 30px 0;
     font-size: 30px; color: var(--ink-soft);
   }
   .gap span {
@@ -200,7 +204,7 @@
     body { font-size: 21px; }
     header { padding-top: 8vh; }
     .timeline { padding-left: 16px; padding-right: 16px; }
-    .timeline::before { left: 28px; }
+    .chapter::before { left: 12px; }
     .row { grid-template-columns: 26px 1fr; margin: 14px 0; }
     .row .knot { grid-column: 1; grid-row: 1 / span 3; margin-top: 20px; width: 12px; height: 12px; }
     .row .slot.l, .row .slot.r { grid-column: 2; justify-content: flex-start; }
@@ -387,12 +391,12 @@
     legend.innerHTML = Array.from({ length: data.trackCount }, (_, t) =>
       `<span><i style="background:${TRACK_COLORS[t % TRACK_COLORS.length]}"></i>${esc(TRACK_NAMES[t] || `линия ${t + 1}`)}</span>`).join("");
 
-    let html = "", prevYear = null, n = 0;
+    let html = `<div class="chapter">`, prevYear = null, n = 0;
     for (const m of data.moments) {
       if (m.year != null && m.year !== prevYear) {
         if (prevYear != null && m.year - prevYear >= 3) {
           const d = m.year - prevYear;
-          html += `<div class="gap"><span>${d} ${plural(d, "год", "года", "лет")} спустя</span></div>`;
+          html += `</div><div class="gap"><span>${d} ${plural(d, "год", "года", "лет")} спустя</span></div><div class="chapter">`;
         }
         html += `<div class="year"><span>${m.year}</span></div>`;
         prevYear = m.year;
@@ -405,8 +409,9 @@
         <div class="slot r">${right.map(e => cardHTML(e, n++)).join("")}</div>
       </section>`;
     }
+    html += `</div>`;
     const tl = document.getElementById("timeline");
-    tl.innerHTML = html || `<div class="loading"><span>в таблице пока пусто</span></div>`;
+    tl.innerHTML = data.moments.length ? html : `<div class="loading"><span>в таблице пока пусто</span></div>`;
     const cards = tl.querySelectorAll(".reveal");
     if (!animate || !("IntersectionObserver" in window)) { cards.forEach(c => c.classList.add("in")); return; }
     const io = new IntersectionObserver(es => es.forEach(e => {
