@@ -36,22 +36,21 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ---------- фон: поле борщевика (bg-sharp.jpg — чёткая, bg.jpg — размытая) ---------- */
+  /* ---------- фон: поле борщевика, параллакс сверху вниз ---------- */
   .bg {
     position: fixed; inset: 0; z-index: -2; overflow: hidden;
+    background: #b2979a;
   }
-  .bg {
-    background: #b2979a url("bg-sharp.jpg") center 60% / cover no-repeat;
-  }
-  .bg::after { /* виньетка + лёгкая дымка, чтобы читался текст */
-    content: ""; position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse at 50% 40%, rgba(240,238,228,0.25), rgba(40,36,28,0.28) 100%),
-      linear-gradient(to bottom, rgba(235,233,225,0.15), rgba(235,233,225,0) 40%);
+  .bg img {
+    position: absolute; left: 50%; top: 0;
+    max-width: none;
+    transform: translateX(-50%);
+    will-change: transform;
+    user-select: none;
   }
   .grain {
     position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    opacity: 0.16; mix-blend-mode: multiply;
+    opacity: 0.07; mix-blend-mode: multiply;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.27  0 0 0 0 0.22  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
 
@@ -80,7 +79,7 @@
   }
   h1::before { /* широкое персиковое свечение, как просвет в облаках */
     content: ""; position: absolute; z-index: -1;
-    left: 50%; top: 55%; width: min(1200px, 100vw); height: 2.8em;
+    left: 50%; top: 95%; width: min(1200px, 100vw); height: 4.2em;
     transform: translate(-50%, -50%);
     background: radial-gradient(closest-side, rgba(255, 210, 188, 0.95), rgba(250, 194, 174, 0.6) 50%, rgba(246, 190, 172, 0));
     filter: blur(10px);
@@ -101,10 +100,10 @@
     transform: rotate(-4deg);
   }
   .status {
-    margin-top: 18px; font-size: 19px; color: var(--ink-soft);
+    margin-top: 14px; font-size: 21px; color: var(--ink-soft);
     display: inline-flex; align-items: center; gap: 8px;
   }
-  .status a { color: inherit; }
+  .status a { color: inherit; text-underline-offset: 3px; }
   .status .dot {
     width: 8px; height: 8px; border-radius: 50%; background: #8a9a6a;
     box-shadow: 0 0 0 0 rgba(138,154,106,0.6);
@@ -137,8 +136,10 @@
   }
   .row .knot {
     grid-column: 2; justify-self: center; margin-top: 22px;
-    width: 14px; height: 14px; border-radius: 50%;
-    background: #fbe6de; border: 2px solid var(--ink-soft);
+    width: 12px; height: 12px; border-radius: 50%;
+    /* плоская тёмная точка с красной и синей кромкой — как стебли на фоне и заголовок */
+    background: #241a22;
+    box-shadow: -2px 0 0 #ef4a22, 2px 0 0 #3b6cf0, 0 0 10px 2px rgba(255, 236, 228, 0.55);
     position: relative; z-index: 1;
   }
   .row .slot { min-width: 0; }
@@ -203,32 +204,72 @@
   }
 
   /* появление при прокрутке */
-  .reveal { opacity: 0; transform: translateY(18px) rotate(var(--rot, 0deg)); transition: opacity .7s ease, transform .7s ease; }
-  .reveal.in { opacity: 1; transform: rotate(var(--rot, 0deg)); }
+  /* тень и размытие под карточкой проявляются вместе с ней, а не «щёлкают» в конце */
+  .reveal {
+    opacity: 0; transform: translateY(18px) rotate(var(--rot, 0deg));
+    box-shadow: 0 1px 0 rgba(255,255,255,0) inset, 0 0 0 rgba(60,30,50,0);
+    -webkit-backdrop-filter: blur(0px) saturate(1); backdrop-filter: blur(0px) saturate(1);
+    transition: opacity .7s ease, transform .7s ease, box-shadow 1s ease .15s, backdrop-filter 1s ease .1s, -webkit-backdrop-filter 1s ease .1s;
+  }
+  .reveal.in {
+    opacity: 1; transform: rotate(var(--rot, 0deg));
+    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 10px 30px rgba(60,30,50,0.14);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1); backdrop-filter: blur(10px) saturate(1.1);
+  }
+  .reveal.in:hover { transform: rotate(0deg) translateY(-2px); box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 16px 40px rgba(60,30,50,0.2); }
 
   .loading { text-align: center; font-size: 30px; color: var(--ink-soft); padding: 10vh 0; position: relative; z-index: 1; }
   .loading span { background: var(--pill); padding: 6px 20px; border-radius: 30px; }
 
-  footer { text-align: center; padding: 0 16px 50px; }
-  header .note { margin-top: 18px; padding: 10px 28px 14px; }
-  header .sub { margin-top: 0; }
-  .note {
-    display: inline-block; max-width: 100%;
-    padding: 12px 26px 14px;
-    font-size: 21px; color: var(--ink); text-align: center;
-    background: var(--paper);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-    border: 1px solid var(--paper-edge);
-    border-radius: 14px 18px 12px 20px;
-    box-shadow: 0 10px 30px rgba(60,30,50,0.18);
+  /* текст прямо на небе: вместо плашек — персиковый ореол, как у заголовка */
+  .glow {
+    position: relative; z-index: 1;
+    color: var(--ink);
+    font-weight: 600;
+    text-shadow:
+      0 0 14px rgba(255, 222, 206, 0.9),
+      0 0 30px rgba(250, 202, 182, 0.6);
   }
-  footer a { color: inherit; }
-  footer .credit { font-size: 25px; margin-bottom: 2px; }
-  .credit a { color: var(--t0); text-decoration-thickness: 1px; text-underline-offset: 3px; }
-  header .credit { margin-top: 4px; font-size: 24px; color: var(--ink-soft); }
+  header .sub {
+    margin-top: 6px;
+    font-size: 32px;
+  }
+  header .sub a, .sign a { color: var(--t0); text-decoration: none; }
+  header .sub a:hover, .sign a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+
+  /* подвал — как подпись художника в углу картины, на светлом горизонте */
+  footer {
+    max-width: 1180px; margin: 0 auto;
+    padding: 0 16px max(130px, 13vh);
+    display: flex; justify-content: center;
+  }
+  .sign { position: relative; isolation: isolate; text-align: center; transform: rotate(-2deg); }
+  .sign::before {
+    content: ""; position: absolute; z-index: -1; inset: -40px -90px;
+    background: radial-gradient(closest-side, rgba(255, 254, 252, 0.97), rgba(255, 250, 247, 0.75) 55%, rgba(255, 250, 247, 0));
+    filter: blur(8px); pointer-events: none;
+  }
+  .sign.glow { /* внизу ореол белый, как зарево у горизонта */
+    /* первые два слоя — тонкая белая обводка, чтобы мелкие буквы не тонули в траве */
+    text-shadow:
+      0 0 1px #fff, 0 0 1px #fff, 0 0 2px rgba(255, 255, 255, 0.9),
+      0 0 10px rgba(255, 253, 251, 1), 0 0 24px rgba(255, 250, 246, 0.85);
+  }
+  .sign .line { font-size: 25px; font-weight: 700; }
+  .sign .name {
+    display: inline-block;
+    font-family: var(--title); font-size: 64px; line-height: 1;
+    margin: 2px 0 4px;
+  }
+  .sign .name a { color: var(--ink); text-shadow: none; }
+  .sign svg { display: block; margin: -10px auto 6px; width: 190px; height: 18px; }
+  .sign .src { font-size: 21px; font-weight: 700; }
+  .sign .src a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 
   /* ---------- узкий экран: одна колонка ---------- */
   @media (max-width: 760px) {
+    .sign .name { font-size: 52px; }
+    header .sub { font-size: 30px; }
     body { font-size: 21px; }
     header { padding-top: 8vh; }
     .timeline { padding-left: 16px; padding-right: 16px; }
@@ -246,24 +287,23 @@
     .gap { text-align: left; padding-left: 4px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1; transform: rotate(var(--rot, 0deg)); transition: none; }
+    .reveal, .reveal.in { opacity: 1; transform: rotate(var(--rot, 0deg)); transition: none;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 10px 30px rgba(60,30,50,0.14);
+      -webkit-backdrop-filter: blur(10px) saturate(1.1); backdrop-filter: blur(10px) saturate(1.1); }
     .status.live .dot { animation: none; }
   }
 </style>
 </head>
 <body>
 
-<div class="bg" aria-hidden="true"></div>
+<div class="bg" aria-hidden="true"><img id="bg-img" src="bg.webp" alt=""></div>
 <div class="grain" aria-hidden="true"></div>
 
 <header>
   <h1 id="title">Танец Смерти</h1>
-  <div class="note">
-  <div class="sub">таймлайн</div>
-  <div class="credit">комикс <a href="https://vk.ru/shuchila" target="_blank" rel="noopener">Шучилы</a></div>
-  <div class="legend" id="legend"></div>
-  <div><div class="status" id="status"><span class="dot"></span><span id="status-text">загружаю таблицу…</span> · <a id="sheet-link-top" target="_blank" rel="noopener">таблица</a></div></div>
-  </div>
+  <div class="sub glow">таймлайн событий · автор — <a href="https://vk.ru/shuchila" target="_blank" rel="noopener">Шучила</a></div>
+  <div class="legend glow" id="legend"></div>
+  <div><div class="status glow" id="status"><span class="dot"></span><span id="status-text">загружаю таблицу…</span> · <a id="sheet-link-top" target="_blank" rel="noopener">таблица</a></div></div>
 </header>
 
 <main class="timeline" id="timeline">
@@ -271,9 +311,11 @@
 </main>
 
 <footer>
-  <div class="note">
-    <div class="credit">«Танец Смерти» — комикс <a href="https://vk.ru/shuchila" target="_blank" rel="noopener">Шучилы</a></div>
-    <div>таймлайн собран по <a id="sheet-link" target="_blank" rel="noopener">оригинальной таблице</a></div>
+  <div class="sign glow">
+    <div class="line">автор комикса</div>
+    <div class="name"><a href="https://vk.ru/shuchila" target="_blank" rel="noopener">Шучила</a></div>
+    <svg viewBox="0 0 190 18" aria-hidden="true"><path d="M4 12 C40 4, 80 16, 118 8 S170 6, 186 10" fill="none" stroke="var(--t0)" stroke-width="2.2" stroke-linecap="round" opacity="0.8"/></svg>
+    <div class="src">события взяты из <a id="sheet-link" target="_blank" rel="noopener">оригинальной таблице</a></div>
   </div>
 </footer>
 
@@ -410,13 +452,44 @@
       const csv = await res.text();
       const changed = apply(csv, first && lastCSV === null);
       try { localStorage.setItem(CACHE_KEY, csv); } catch (_) {}
-      statusEl.className = "status live";
+      statusEl.className = "status glow live";
       statusText.textContent = changed && !first ? `есть изменения · ${hhmm()}` : `синхронизировано · ${hhmm()}`;
     } catch (err) {
-      statusEl.className = "status err";
+      statusEl.className = "status glow err";
       statusText.textContent = lastCSV ? "нет связи с таблицей, показываю сохранённое" : "не удалось загрузить таблицу";
     }
   }
+
+  // ---------- параллакс фона ----------
+  // Картинка масштабируется «по cover» без растяжения; по мере прокрутки страницы
+  // она плавно едет от своего верха (в начале) к низу (в конце).
+  const bgImg = document.getElementById("bg-img");
+  let bgTravel = 0, bgTicking = false;
+  function layoutBg() {
+    if (!bgImg.naturalWidth) return;
+    const vw = innerWidth, vh = innerHeight;
+    // минимум 1.3 высоты экрана, чтобы и на узком телефоне было куда ехать
+    const k = Math.max(vw / bgImg.naturalWidth, vh * 1.3 / bgImg.naturalHeight);
+    const w = Math.ceil(bgImg.naturalWidth * k), h = Math.ceil(bgImg.naturalHeight * k);
+    bgImg.style.width = w + "px"; bgImg.style.height = h + "px";
+    bgTravel = Math.max(0, h - vh);
+    moveBg();
+  }
+  function moveBg() {
+    bgTicking = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    bgImg.style.transform = `translate3d(-50%, ${-Math.round(p * bgTravel)}px, 0)`;
+  }
+  addEventListener("scroll", () => { if (!bgTicking) { bgTicking = true; requestAnimationFrame(moveBg); } }, { passive: true });
+  // на телефоне адресная строка прячется при прокрутке и меняет высоту окна — из-за этого не перемасштабируем
+  let lastW = innerWidth, lastH = innerHeight;
+  addEventListener("resize", () => {
+    if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 150) return moveBg();
+    lastW = innerWidth; lastH = innerHeight; layoutBg();
+  });
+  bgImg.complete ? layoutBg() : bgImg.addEventListener("load", layoutBg);
+  new ResizeObserver(moveBg).observe(document.body); // высота страницы меняется после загрузки таблицы
 
   try { const cached = localStorage.getItem(CACHE_KEY); if (cached) apply(cached, true); } catch (_) {}
   refresh(true);
