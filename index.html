@@ -10,13 +10,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Marck+Script&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #2f2a24;
-    --ink-soft: #5b5348;
-    --paper: rgba(250, 247, 238, 0.72);
+    --ink: #2b1f29;
+    --ink-soft: #5e4a58;
+    --paper: rgba(253, 238, 233, 0.74);   /* светлый персик неба */
+    --pill: rgba(250, 228, 220, 0.86);
     --paper-edge: rgba(255, 255, 255, 0.55);
-    --spine: rgba(60, 52, 40, 0.35);
-    --t0: #8a5a3c;   /* основная линия — ржавый */
-    --t1: #4f6b70;   /* вторая линия — сизый */
+    --spine: rgba(52, 34, 48, 0.45);
+    --t0: #b4532e;   /* основная линия — оранжевый отблеск на стеблях */
+    --t1: #4b62a6;   /* вторая линия — голубой отблеск */
     --t2: #6d6a3a;
     --t3: #7a4a63;
     --hand: "Caveat", "Bad Script", cursive;
@@ -137,7 +138,7 @@
   .row .knot {
     grid-column: 2; justify-self: center; margin-top: 22px;
     width: 14px; height: 14px; border-radius: 50%;
-    background: #efe9da; border: 2px solid var(--ink-soft);
+    background: #fbe6de; border: 2px solid var(--ink-soft);
     position: relative; z-index: 1;
   }
   .row .slot { min-width: 0; }
@@ -154,9 +155,9 @@
     font-family: var(--title);
     font-size: 54px; line-height: 1;
     padding: 6px 22px 10px;
-    background: rgba(236, 232, 218, 0.82);
+    background: var(--pill);
     border-radius: 40% 55% 45% 50% / 60% 45% 55% 40%;
-    box-shadow: 0 6px 24px rgba(50,40,30,0.12);
+    box-shadow: 0 6px 24px rgba(60,30,50,0.12);
   }
   .gap {
     text-align: center; position: relative; z-index: 1;
@@ -165,7 +166,7 @@
   }
   .gap span {
     display: inline-block; padding: 4px 18px;
-    background: rgba(236, 232, 218, 0.85); border-radius: 30px; box-shadow: 0 6px 24px rgba(50,40,30,0.12);
+    background: var(--pill); border-radius: 30px; box-shadow: 0 6px 24px rgba(60,30,50,0.12);
   }
 
   .card {
@@ -177,11 +178,11 @@
     backdrop-filter: blur(10px) saturate(1.1);
     border: 1px solid var(--paper-edge);
     border-radius: 6px 10px 7px 12px;
-    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 10px 30px rgba(45,38,28,0.14);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 10px 30px rgba(60,30,50,0.14);
     transform: rotate(var(--rot, 0deg));
     transition: transform .35s ease, box-shadow .35s ease;
   }
-  .card:hover { transform: rotate(0deg) translateY(-2px); box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 16px 40px rgba(45,38,28,0.2); }
+  .card:hover { transform: rotate(0deg) translateY(-2px); box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 16px 40px rgba(60,30,50,0.2); }
   .card::before { /* полоска цвета линии, как маркер */
     content: ""; position: absolute; top: 14px; bottom: 14px; width: 4px; border-radius: 3px;
     background: var(--tc); opacity: 0.75;
@@ -206,7 +207,7 @@
   .reveal.in { opacity: 1; transform: rotate(var(--rot, 0deg)); }
 
   .loading { text-align: center; font-size: 30px; color: var(--ink-soft); padding: 10vh 0; position: relative; z-index: 1; }
-  .loading span { background: rgba(236,232,218,0.7); padding: 6px 20px; border-radius: 30px; }
+  .loading span { background: var(--pill); padding: 6px 20px; border-radius: 30px; }
 
   footer { text-align: center; padding: 0 16px 50px; }
   header .note { margin-top: 18px; padding: 10px 28px 14px; }
@@ -219,7 +220,7 @@
     -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
     border: 1px solid var(--paper-edge);
     border-radius: 14px 18px 12px 20px;
-    box-shadow: 0 10px 30px rgba(45,38,28,0.18);
+    box-shadow: 0 10px 30px rgba(60,30,50,0.18);
   }
   footer a { color: inherit; }
   footer .credit { font-size: 25px; margin-bottom: 2px; }
