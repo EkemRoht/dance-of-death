@@ -56,6 +56,7 @@
 
   /* ---------- шапка ---------- */
   header {
+    overflow-x: clip;
     text-align: center;
     padding: 12vh 16px 5vh;
   }
@@ -71,8 +72,18 @@
     text-shadow:
       calc(var(--ca) * -1) 0 0 rgba(232, 92, 38, 0.85),
       var(--ca) 0 0 rgba(64, 120, 235, 0.8),
-      0 0 0.35em rgba(255, 238, 232, 0.75),
-      0 0 0.9em rgba(255, 230, 225, 0.45);
+      0 0 0.25em rgba(255, 214, 196, 0.9),
+      0 0 0.7em rgba(250, 196, 176, 0.7),
+      0 0 1.4em rgba(246, 186, 168, 0.5);
+    position: relative; isolation: isolate;
+  }
+  h1::before { /* широкое персиковое свечение, как просвет в облаках */
+    content: ""; position: absolute; z-index: -1;
+    left: 50%; top: 55%; width: min(1200px, 100vw); height: 2.8em;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgba(255, 210, 188, 0.95), rgba(250, 194, 174, 0.6) 50%, rgba(246, 190, 172, 0));
+    filter: blur(10px);
+    pointer-events: none;
   }
   .sub {
     margin-top: 10px;
