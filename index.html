@@ -65,9 +65,24 @@
     font-size: clamp(56px, 11vw, 128px);
     line-height: 1;
     margin: 0;
-    color: #2a251f;
-    text-shadow: 0 2px 30px rgba(255,252,240,0.6);
+    color: #241a22;
+    /* хроматический сдвиг, как на стеблях борщевика: оранжевый край слева, голубой справа */
+    --ca: 0.022em;
+    text-shadow:
+      calc(var(--ca) * -1) 0 0 rgba(232, 92, 38, 0.85),
+      var(--ca) 0 0 rgba(64, 120, 235, 0.8),
+      0 0 0.35em rgba(255, 238, 232, 0.75),
+      0 0 0.9em rgba(255, 230, 225, 0.45);
+    animation: glitch 7s steps(1) infinite;
   }
+  /* лёгкое редкое «дрожание» сдвига */
+  @keyframes glitch {
+    0%, 91%, 100% { --ca: 0.022em; transform: none; }
+    92% { --ca: 0.05em; transform: translateX(-0.01em); }
+    93% { --ca: 0.012em; transform: translateX(0.008em) skewX(-2deg); }
+    94% { --ca: 0.04em; transform: none; }
+  }
+  @property --ca { syntax: "<length>"; inherits: false; initial-value: 0.022em; }
   .sub {
     margin-top: 10px;
     font-size: 28px;
@@ -230,6 +245,7 @@
   @media (prefers-reduced-motion: reduce) {
     .reveal { opacity: 1; transform: rotate(var(--rot, 0deg)); transition: none; }
     .status.live .dot { animation: none; }
+    h1 { animation: none; }
   }
 </style>
 </head>
